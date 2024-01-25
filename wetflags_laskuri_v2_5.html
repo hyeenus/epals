@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WETFLAG & WETTRAUMA Dosage Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .calculator-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .group {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+        }
+        .group-header {
+            font-weight: bold;
+            color: #555;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input[type="number"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: calc(100% - 22px);
+        }
+    </style>
+    <script>
+        function roundToTwo(num) {
+            return num % 1 === 0 ? num : parseFloat(num.toFixed(2));
+        }
+
+        function roundToNearestHalf(num) {
+            return Math.round(num * 2) / 2;
+        }
+
+        function minOrCalculated(calculated, max) {
+            return calculated > max ? max : calculated;
+        }
+
+        function calculateDosages() {
+            var age = parseFloat(document.getElementById('ageInput').value);
+            var weight = parseFloat(document.getElementById('weightInput').value);
+
+            if (isNaN(weight)) {
+                weight = (age + 4) * 2;
+            }
+            
+            var output = "<div class='section'>";
+            output += "<div class='section-header'>WETFLAG</div>";
+
+            output += "<div class='group'>";
+            output += "<div class='group-header'>Defibrillation and Fluids</div>";
+            output += "<p>Energy for defib: " + minOrCalculated(weight * 4, 360) + " J</p>";
+            output += "<p>Energy for cardioversio: " + minOrCalculated(Math.max(weight * 1, weight * 2), 150) + " J</p>";
+            output += "<p>Tube size (kuffillinen): " + minOrCalculated(roundToNearestHalf((age / 4) + 3.5), 8) + "</p>";
+            output += "<p>Fluid: " + minOrCalculated(weight * 10, 250) + " ml</p>";
+            output += "</div>"; // Close group
+
+            output += "<div class='group'>";
+            output += "<div class='group-header'>Medications</div>";
+            output += "<p>Lorazepam: " + minOrCalculated(roundToTwo(weight * 0.1), 4) + " mg</p>";
+            output += "<p>Midatsolaami (intranasal): " + minOrCalculated(roundToTwo(weight * 0.3), 10) + " mg</p>";
+            output += "<p>Midatsolaami (i.v.): " + minOrCalculated(roundToTwo(weight * 0.1), 5) + " mg</p>";
+            output += "<p>Adrenalin: " + minOrCalculated(weight * 10, 1000) + " mikrog</p>";
+            output += "<p>Adenosine: " + minOrCalculated(roundToTwo(weight * 0.2), 6) + " mg</p>";
+            output += "<p>Amiodaroni: " + minOrCalculated(weight * 5, 300) + " mg</p>";
+            output += "<p>Glucose G10%: " + minOrCalculated(weight * 3, 100) + " ml</p>";
+            output += "</div>"; // Close group
+            output += "</div>"; // Close section
+
+            output += "<div class='section'>";
+            output += "<div class='section-header'>WETTRAUMA</div>";
+
+            output += "<div class='group'>";
+            output += "<div class='group-header'>RSI Medications</div>";
+            output += "<p>Ketamine: " + minOrCalculated(Math.max(weight * 0.5, weight * 1), 100) + " mg</p>";
+            output += "<p>Fentanyl: " + minOrCalculated(Math.max(weight * 1, weight * 2), 100) + " mikrog</p>";
+            output += "<p>Rocuronium: " + minOrCalculated(weight * 1, 100) + " mg</p>";
+            output += "</div>"; // Close group
+
+            output += "<div class='group'>";
+            output += "<div class='group-header'>MTP</div>";
+            output += "<p>RBC: " + minOrCalculated(weight * 10, 1000) + " ml</p>";
+            output += "<p>FFP: " + minOrCalculated(weight * 10, 1000) + " ml</p>";
+            output += "<p>Tromb: " + minOrCalculated(weight * 5, 500) + " ml</p>";
+            output += "</div>"; // Close group
+
+            output += "<div class='group'>";
+            output += "<div class='group-header'>Other Treatments</div>";
+            output += "<p>Tranexamic acid: " + minOrCalculated(weight * 20, 1000) + " mg</p>";
+            output += "<p>Resuscitation fluid max: " + minOrCalculated(weight * 10, 250) + " ml</p>";
+            output += "<p>Adrenalin: " + minOrCalculated(weight * 10, 1000) + " mikrog</p>";
+            output += "<p>Amiodaroni: " + minOrCalculated(weight * 5, 300) + " mg</p>";
+            output += "</div>"; // Close group
+            output += "</div>"; // Close section
+
+            document.getElementById('output').innerHTML = output;
+        }
+    </script>
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>WETFLAG & WETTRAUMA Dosage Calculator</h1>
+        <div>
+            <label for="ageInput">Enter patient's age in years:</label>
+            <input type="number" id="ageInput" placeholder="Age in years" step="0.1">
+        </div>
+        <div>
+            <label for="weightInput">Enter patient's weight in kg (optional):</label>
+            <input type="number" id="weightInput" placeholder="Weight in kg (if known)" step="0.1">
+        </div>
+        <button onclick="calculateDosages()">Calculate Dosages</button>
+        <div id="output"></div>
+    </div>
+</body>
+</html>
